@@ -1,0 +1,32 @@
+{
+  "name": "ecommerce-backend-nodejs",
+  "version": "1.0.0",
+  "main": "server.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willywithcode/eCommerce-backend-nodejs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/willywithcode/eCommerce-backend-nodejs/issues"
+  },
+  "homepage": "https://github.com/willywithcode/eCommerce-backend-nodejs#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "compression": "^1.8.1",
+    "helmet": "^8.1.0"
+  }
+}
