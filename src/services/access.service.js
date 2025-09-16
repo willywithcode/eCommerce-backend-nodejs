@@ -3,6 +3,10 @@
 const shopModel = require('../models/shop.model');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const KeyTokenService = require('./keyToken.service');
+const { createTokenPair } = require('../auth/authUtils');
+const { type } = require('os');
+const { getIntoData } = require('../utils');
 const RolesShop = {
     SHOP: "SHOP",
     WRITER: "WRITER",
@@ -11,8 +15,8 @@ const RolesShop = {
 }
 
 
-class AccessController {
-    static signUp = async ({name, email, password}) => {
+class AccessService {
+    static signUp = async ({ name, email, password }) => {
         try {
             // check email exist
 
@@ -29,19 +33,45 @@ class AccessController {
                 name, email, password: passwordHash, roles: [RolesShop.SHOP]
             });
             if (newShop) {
-                //created privatekey, publickey 
-                const { privateKey, publicKey} = crypto.generateKeyPairSync('rsa',  {
-                    modulusLength: 4096,
-                })
-                console.log({privateKey, publicKey}); // save db
+                const privateKey = crypto.randomBytes(64).toString('hex');
+                const publicKey = crypto.randomBytes(64).toString('hex');
+
+                console.log({ privateKey, publicKey }); // save db
+
+                const keyStore = await KeyTokenService.createKeyToken({
+                    userId: newShop._id,
+                    publicKey,
+                    privateKey
+                });
+                if (!keyStore) {
+                    return {
+                        code: 'xxxx',
+                        message: 'Error creating publicKey',
+                    }
+                }
+                //create token pair
+                const tokens = await createTokenPair({ userId: newShop._id }, publicKey, privateKey);
+                console.log("Created Token Sucessfully::", tokens);
+
+                return {
+                    code: 201,
+                    metadata: {
+                        shop: getIntoData({
+                            fileds: ['_id', 'name', 'email'],
+                            object: newShop
+                        }),
+                        tokens
+                    }
+                }
             }
         }
         catch (error) {
             return {
-                code: 'xxxx',
+                code: 200,
                 message: error.message,
                 status: 'error',
             }
         }
     }
 }
+module.exports = AccessService;
