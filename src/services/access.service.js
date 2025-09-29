@@ -19,6 +19,12 @@ const RolesShop = {
 
 
 class AccessService {
+
+    static logout = async ({keyStore}) => {
+        const delKey = await KeyTokenService.removeKeyById(keyStore._id);
+        
+    }
+
     //check email
     //match password
     //create AT and RT and save
